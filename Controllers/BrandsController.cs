@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReviewApiApp.DataAccessLayer;
 using ReviewApiApp.Domain;
 using ReviewApiApp.ViewModels;
+using System.Net;
 
 namespace ReviewApiApp.Controllers
 {
@@ -12,14 +13,36 @@ namespace ReviewApiApp.Controllers
 
     public class BrandsController : ControllerBase
     {
+        private readonly ILogger<BrandsController> logger;
+
+        public BrandsController(ILogger<BrandsController> _logger)
+        {
+            this.logger = _logger;
+        }
+
+
 
         [HttpGet()]
         public ActionResult<List<Brand>> GetBrands(int productId)
         {
-            var production = ProductionDataStore.Current.Productions.FirstOrDefault( p => p.Id == productId);
-            if (production == null)
-                return NotFound();
-            return Ok(production.Brands);
+            try
+            {
+                throw new Exception("makes exception..");
+                var production = ProductionDataStore.Current.Productions.FirstOrDefault(p => p.Id == productId);
+                if (production == null)
+                {
+                    this.logger.LogInformation($"The production {productId} is not there.... sorry!");
+                    return NotFound();
+                }
+
+                return Ok(production.Brands);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogCritical("ther is an error");
+                return StatusCode(500, "internal error because there is no production,plz call again ");
+            }
+
         }
         
         
