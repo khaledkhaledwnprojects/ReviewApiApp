@@ -4,6 +4,11 @@ var builder = WebApplication.CreateBuilder(args);// design pattern
 
 // Add services to the container.
 
+builder.Logging.ClearProviders();// clear logs from console, debug, output 
+builder.Logging.AddConsole();// enables logs in console environment.
+builder.Logging.AddDebug();// enables logs in Debug environment.
+
+
 builder.Services.AddControllers(Options =>
 {
     Options.ReturnHttpNotAcceptable = true; // 406 code
