@@ -33,7 +33,16 @@ builder.Services.AddControllers(Options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<LocalMailService>(); // Registering Localmailserivece
+
+
+#if DEBUG
+builder.Services.AddTransient<IMailService,LocalMailService>(); // Registering Localmailserivece
+#else
+builder.Services.AddTransient<IMailService,CloudMailService>(); // Registering CloudMailService
+#endif
+
+
+
 var app = builder.Build();// app is a final instance
 
 // Configure the HTTP request pipeline.

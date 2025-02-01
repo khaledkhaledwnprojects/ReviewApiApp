@@ -15,9 +15,9 @@ namespace ReviewApiApp.Controllers
     public class BrandsController : ControllerBase
     {
         private readonly ILogger<BrandsController> logger;
-        private readonly LocalMailService mailservice;
+        private readonly IMailService mailservice;
 
-        public BrandsController(ILogger<BrandsController> _logger , LocalMailService  _mailservice)
+        public BrandsController(ILogger<BrandsController> _logger , IMailService _mailservice)
         {
             this.logger = _logger;
             this.mailservice = _mailservice;

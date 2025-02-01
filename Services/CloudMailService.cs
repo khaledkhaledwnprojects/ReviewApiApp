@@ -1,12 +1,12 @@
 ﻿namespace ReviewApiApp.Services
 {
-    public class LocalMailService:IMailService
+    public class CloudMailService:IMailService
     {
-        private readonly ILogger<LocalMailService> logger;
+        private readonly ILogger<CloudMailService> logger;
 
-        public LocalMailService(ILogger<LocalMailService> logger)
+        public CloudMailService(ILogger<CloudMailService> _logger)
         {
-            this.logger = logger;
+            this.logger = _logger;
         }
 
         private string MailTo = "khaled@gmail.com";
