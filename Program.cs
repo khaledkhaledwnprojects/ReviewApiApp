@@ -1,12 +1,26 @@
 using Microsoft.Extensions.Options;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);// design pattern
+
+Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console().
+            WriteTo.File("C:\\Users\\kh\\Desktop\\maching learning\\khaled.txt", rollingInterval: RollingInterval.Day).
+            CreateLogger();
+
+
 
 // Add services to the container.
 
 builder.Logging.ClearProviders();// clear logs from console, debug, output 
 builder.Logging.AddConsole();// enables logs in console environment.
 builder.Logging.AddDebug();// enables logs in Debug environment.
+
+// Registering serilog library
+builder.Host.UseSerilog();
+
+
 
 
 builder.Services.AddControllers(Options =>
