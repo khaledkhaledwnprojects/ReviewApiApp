@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using ReviewApiApp.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);// design pattern
@@ -32,7 +33,7 @@ builder.Services.AddControllers(Options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddTransient<LocalMailService>(); // Registering Localmailserivece
 var app = builder.Build();// app is a final instance
 
 // Configure the HTTP request pipeline.

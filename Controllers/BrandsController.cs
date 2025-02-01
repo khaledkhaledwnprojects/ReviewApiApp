@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ReviewApiApp.DataAccessLayer;
 using ReviewApiApp.Domain;
+using ReviewApiApp.Services;
 using ReviewApiApp.ViewModels;
 using System.Net;
 
@@ -14,10 +15,13 @@ namespace ReviewApiApp.Controllers
     public class BrandsController : ControllerBase
     {
         private readonly ILogger<BrandsController> logger;
+        private readonly LocalMailService mailservice;
 
-        public BrandsController(ILogger<BrandsController> _logger)
+        public BrandsController(ILogger<BrandsController> _logger , LocalMailService  _mailservice)
         {
             this.logger = _logger;
+            this.mailservice = _mailservice;
+           
         }
 
 
@@ -27,16 +31,16 @@ namespace ReviewApiApp.Controllers
         {
             try
             {
-                throw new Exception("makes exception..");
                 var production = ProductionDataStore.Current.Productions.FirstOrDefault(p => p.Id == productId);
                 if (production == null)
                 {
                     this.logger.LogInformation($"The production {productId} is not there.... sorry!");
                     return NotFound();
                 }
-
+                mailservice.Send("hello i am using localservice", " with DI concept ");
                 return Ok(production.Brands);
             }
+            
             catch (Exception ex)
             {
                 this.logger.LogCritical("ther is an error");
