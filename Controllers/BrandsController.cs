@@ -16,11 +16,16 @@ namespace ReviewApiApp.Controllers
     {
         private readonly ILogger<BrandsController> logger;
         private readonly IMailService mailservice;
+        private readonly ProductionDataStore dataset;
 
-        public BrandsController(ILogger<BrandsController> _logger , IMailService _mailservice)
+        public BrandsController(
+              ILogger<BrandsController> _logger,
+              IMailService _mailservice,
+              ProductionDataStore dataset)
         {
             this.logger = _logger;
             this.mailservice = _mailservice;
+            this.dataset = dataset;
            
         }
 
@@ -31,7 +36,7 @@ namespace ReviewApiApp.Controllers
         {
             try
             {
-                var production = ProductionDataStore.Current.Productions.FirstOrDefault(p => p.Id == productId);
+                var production = dataset.Productions.FirstOrDefault(p => p.Id == productId);
                 if (production == null)
                 {
                     this.logger.LogInformation($"The production {productId} is not there.... sorry!");
@@ -53,7 +58,7 @@ namespace ReviewApiApp.Controllers
         [HttpGet("{brandId}",Name ="GetBrand")]
         public ActionResult <Brand> GetBrandById(int productId, int brandId)
         {
-            var production = ProductionDataStore.Current.Productions.FirstOrDefault( p => p.Id == productId);
+            var production = dataset.Productions.FirstOrDefault( p => p.Id == productId);
             if (production == null)
                 return NotFound("production is not available");
 
@@ -69,11 +74,11 @@ namespace ReviewApiApp.Controllers
         [HttpPost]
         public ActionResult<List<Brand>> CreateBrand(int productId, BrandForCreation brand)
         {
-            var product = ProductionDataStore.Current.Productions.FirstOrDefault(p => p.Id == productId);
+            var product = dataset.Productions.FirstOrDefault(p => p.Id == productId);
             if (product == null) return NotFound();
 
 
-            int MaxId = ProductionDataStore.Current.Productions.SelectMany(p => p.Brands).Max(i => i.Id);
+            int MaxId = dataset.Productions.SelectMany(p => p.Brands).Max(i => i.Id);
             var NewProductBrands = new Brand()
             {
                 Name = brand.Name,
@@ -88,7 +93,7 @@ namespace ReviewApiApp.Controllers
         [HttpPut("{BrandId}")] // Update all object// all fields
          public ActionResult UpdateBrand(int ProductId , int BrandId, BrandForUpdate brand)
         {
-            var product = ProductionDataStore.Current.Productions.FirstOrDefault(i => i.Id == ProductId);
+            var product = dataset.Productions.FirstOrDefault(i => i.Id == ProductId);
             if (product == null) return NotFound();
 
             var existingbrand = product.Brands.FirstOrDefault( b => b.Id == BrandId);
@@ -106,7 +111,7 @@ namespace ReviewApiApp.Controllers
         [HttpPatch("{BrandId}")] // Updating some of fields Not All Fields.
         public ActionResult ParitiallyUpdate(int productId, int BrandId, JsonPatchDocument<BrandForUpdate> patchdocument)
         {
-            var existinigproduct = ProductionDataStore.Current.Productions.FirstOrDefault( i => i.Id == productId);
+            var existinigproduct = dataset.Productions.FirstOrDefault( i => i.Id == productId);
             if( existinigproduct == null) return NotFound();
 
             var existingbrand = existinigproduct.Brands.FirstOrDefault(b => b.Id == BrandId);
@@ -137,7 +142,7 @@ namespace ReviewApiApp.Controllers
         [HttpDelete("{brandId}")]
         public ActionResult DeletBrand(int productId, int brandId)
         {
-            var product = ProductionDataStore.Current.Productions.FirstOrDefault(i => i.Id == productId);
+            var product = dataset.Productions.FirstOrDefault(i => i.Id == productId);
             if (product == null) return NotFound();
 
             var brand = product.Brands.FirstOrDefault(b => b.Id == brandId);

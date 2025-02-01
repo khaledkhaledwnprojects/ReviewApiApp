@@ -10,12 +10,17 @@ namespace ReviewApiApp.Controllers
     [Route("Api/[controller]")]
     public class ProductController : ControllerBase
     {
+        private readonly ProductionDataStore dataset;
 
+        public ProductController(ProductionDataStore dataset)
+        {
+            this.dataset = dataset;
+        }
 
         [HttpGet()]
         public ActionResult<List<Production>> GetAllProductions()
         {
-            var productions = ProductionDataStore.Current.Productions;
+            var productions = dataset.Productions;
             if (productions == null)
                 return NotFound();
             return Ok(productions);
@@ -26,7 +31,7 @@ namespace ReviewApiApp.Controllers
         public ActionResult GetProduct(int ProductionId)
         {
 
-            var production = ProductionDataStore.Current.Productions.FirstOrDefault(p => p.Id == ProductionId);
+            var production = dataset.Productions.FirstOrDefault(p => p.Id == ProductionId);
 
             if (production == null)
                 return NotFound();
@@ -40,9 +45,9 @@ namespace ReviewApiApp.Controllers
         public ActionResult<List<Production>> GetProductAndNextProduction(int ProductionId)
         {
 
-            var production = ProductionDataStore.Current.Productions.FirstOrDefault(p => p.Id == ProductionId);
+            var production = dataset.Productions.FirstOrDefault(p => p.Id == ProductionId);
 
-            var nextpro = ProductionDataStore.Current.Productions.FirstOrDefault(ne => ne.Id > ProductionId);
+            var nextpro = dataset.Productions.FirstOrDefault(ne => ne.Id > ProductionId);
 
             var result = new List<Production>() { production, nextpro };
             if (production == null)
@@ -59,7 +64,7 @@ namespace ReviewApiApp.Controllers
         public ActionResult<Production> CreateProduct(CreationForProductioncs product)
         {
 
-            int NewId = ProductionDataStore.Current.Productions.Max(p => p.Id);
+            int NewId = dataset.Productions.Max(p => p.Id);
             Production NewProduct = new Production()
             {
                 Name = product.Name,
@@ -67,7 +72,7 @@ namespace ReviewApiApp.Controllers
                 Id = ++NewId
             };
 
-            ProductionDataStore.Current.Productions.Add(NewProduct);
+            dataset.Productions.Add(NewProduct);
             return Ok(NewProduct);
 
         }

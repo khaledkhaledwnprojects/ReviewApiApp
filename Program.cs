@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using ReviewApiApp.DataAccessLayer;
 using ReviewApiApp.Services;
 using Serilog;
 
@@ -34,7 +35,7 @@ builder.Services.AddControllers(Options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+builder.Services.AddSingleton<ProductionDataStore>();// by the way it's shared for all application.
 #if DEBUG
 builder.Services.AddTransient<IMailService,LocalMailService>(); // Registering Localmailserivece
 #else

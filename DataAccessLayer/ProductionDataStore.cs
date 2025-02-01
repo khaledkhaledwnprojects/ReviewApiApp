@@ -6,7 +6,7 @@ namespace ReviewApiApp.DataAccessLayer
     {
         public List<Production> Productions { get; set; }
 
-        public static ProductionDataStore Current { get; set; } = new ProductionDataStore();
+     //   public static ProductionDataStore Current { get; set; } = new ProductionDataStore();
 
         public ProductionDataStore()
         {
