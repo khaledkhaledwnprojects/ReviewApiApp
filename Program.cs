@@ -1,7 +1,11 @@
+using DataAccessLayer.DbContexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ReviewApiApp.DataAccessLayer;
 using ReviewApiApp.Services;
 using Serilog;
+
+
 
 var builder = WebApplication.CreateBuilder(args);// design pattern
 
@@ -22,7 +26,9 @@ builder.Logging.AddDebug();// enables logs in Debug environment.
 // Registering serilog library
 builder.Host.UseSerilog();
 
-
+// Registering Dbcontext as Service 
+builder.Services.AddDbContext<ApiReviewDbContext>(
+    Options => Options.UseSqlServer(builder.Configuration["ConnectionStrings:ApiReviewConnectionString"]));
 
 
 builder.Services.AddControllers(Options =>
