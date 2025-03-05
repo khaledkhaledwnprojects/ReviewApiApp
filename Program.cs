@@ -48,7 +48,7 @@ builder.Services.AddTransient<IMailService,LocalMailService>(); // Registering L
 builder.Services.AddTransient<IMailService,CloudMailService>(); // Registering CloudMailService
 #endif
 
-
+builder.Services.AddScoped<IProductRepository,ProductRepository>();
 
 var app = builder.Build();// app is a final instance
 

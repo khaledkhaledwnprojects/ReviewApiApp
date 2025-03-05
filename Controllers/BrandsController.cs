@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using ReviewApiApp.DataAccessLayer;
 using ReviewApiApp.Domain;
 using ReviewApiApp.Services;
@@ -17,22 +18,24 @@ namespace ReviewApiApp.Controllers
         private readonly ILogger<BrandsController> logger;
         private readonly IMailService mailservice;
         private readonly ProductionDataStore dataset;
+        private readonly ProductRepository productrepository;
 
         public BrandsController(
               ILogger<BrandsController> _logger,
               IMailService _mailservice,
-              ProductionDataStore dataset)
+              ProductionDataStore dataset,
+              ProductRepository productrepository)
         {
             this.logger = _logger;
             this.mailservice = _mailservice;
             this.dataset = dataset;
-           
+            this.productrepository = productrepository;
         }
 
 
 
         [HttpGet()]
-        public ActionResult<List<Brand>> GetBrands(int productId)
+        public async Task<ActionResult<List<Brand>>> GetBrands(int productId)
         {
             try
             {
@@ -45,12 +48,16 @@ namespace ReviewApiApp.Controllers
                 mailservice.Send("hello i am using localservice", " with DI concept ");
                 return Ok(production.Brands);
             }
-            
+
             catch (Exception ex)
             {
                 this.logger.LogCritical("ther is an error");
                 return StatusCode(500, "internal error because there is no production,plz call again ");
             }
+
+            // var response = await productrepository.GetBrandsForProductionAsync(productId);
+           
+
 
         }
         

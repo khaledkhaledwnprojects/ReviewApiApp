@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReviewApiApp.DataAccessLayer;
 using ReviewApiApp.Domain;
+using ReviewApiApp.Services;
 using ReviewApiApp.ViewModels;
 using System.Numerics;
 
@@ -11,10 +12,12 @@ namespace ReviewApiApp.Controllers
     public class ProductController : ControllerBase
     {
         private readonly ProductionDataStore dataset;
+        private readonly IProductRepository productrepo;
 
-        public ProductController(ProductionDataStore dataset)
+        public ProductController(ProductionDataStore dataset, IProductRepository productrepo)
         {
             this.dataset = dataset;
+            this.productrepo = productrepo;
         }
 
         [HttpGet()]
@@ -28,15 +31,17 @@ namespace ReviewApiApp.Controllers
         }
 
         [HttpGet("{ProductionId}")]
-        public ActionResult GetProduct(int ProductionId)
+        public async Task<ActionResult<Production>> GetProduct(int ProductionId)
         {
 
-            var production = dataset.Productions.FirstOrDefault(p => p.Id == ProductionId);
+            //var production = dataset.Productions.FirstOrDefault(p => p.Id == ProductionId);
 
-            if (production == null)
-                return NotFound();
+            //if (production == null)
+            //    return NotFound();
 
-            return Ok(production);
+            //return Ok(production);
+            var response = await productrepo.GetProductionAsync(ProductionId);
+            return Ok(response);
 
         }
 
